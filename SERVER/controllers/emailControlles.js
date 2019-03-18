@@ -1,7 +1,7 @@
 import allmails from '../models/Mails';
 import { userList } from '../models/users'
-import filtered from '../Helper/filter';
-import validator from '../Helper/validation'
+import filtered from '../helper/filter';
+import validator from '../helper/validation'
 
 
 

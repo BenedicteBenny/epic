@@ -1,7 +1,12 @@
 import express from 'express';
 import allRoutes from './routes';
 import bodyParser from 'body-parser';
-import dotenv from 'dotenv';
+
+
+if(process.env.NODE_ENV !== "development") {
+    require("dotenv").config();
+}
+
 
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json';
@@ -9,8 +14,6 @@ import dotenv from 'dotenv';
 // const swaggerRouter = Router();
 // swaggerRouter.use('/swagger', swaggerUi.serve);
 // swaggerRouter.get('/swagger', swaggerUi.setup(swaggerDocument));
-
-dotenv.config();
 
 if (!process.env.JWTPRIVATEKEY){
     console.error('FATAL ERROR: jwt is not defined');

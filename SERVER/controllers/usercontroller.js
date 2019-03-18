@@ -2,7 +2,7 @@ import users from '../models/users';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Validator from '../helper/validation';
-import UserModel from '../models/User';
+import UserService from '../models/User';
 
 
 export default class UserController {
@@ -101,7 +101,7 @@ export default class UserController {
                 throw Object.assign({}, isInvalid);
             };
             // check if user exists
-            const existingUser = await UserModel.readOne(`username = $1`, [req.body.username]);
+            const existingUser = await UserService.readOne(`username = $1`, [req.body.username]);
             
             if(existingUser && existingUser.id) {
                 throw "User already existed";
@@ -109,7 +109,7 @@ export default class UserController {
             // encrypt password
             req.body.password = bcrypt.hashSync(req.body.password, 10);
             //create new user
-            const createdUser  = await UserModel.create(req.body);
+            const createdUser  = await UserService.create(req.body);
             return res.status(201).send({
                 status: 201,
                 data: createdUser
@@ -133,7 +133,7 @@ export default class UserController {
                 throw Object.assign({}, isInvalid);
             };
             // fetch user details 
-            const user = await UserModel.readOne(`username = $1`, [req.body.username]);
+            const user = await UserService.readOne(`username = $1`, [req.body.username]);
 
             if(!user) {
                 throw `User with username ${req.body.username} doesn't exist`

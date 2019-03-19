@@ -198,9 +198,9 @@ export default class Validate {
 	static createUser(user) {
 		const schema = Joi.object()
 			.keys({
-				firstname: Joi.string().alphanum().min(3).max(30).required(),
-				lastname: Joi.string().alphanum().min(3).max(30).required(),
-				username: Joi.string().alphanum().min(3).max(30).required(),
+				firstname: Joi.string().trim().alphanum().min(3).max(30).required(),
+				lastname: Joi.string().trim().alphanum().min(3).max(30).required(),
+				username: Joi.string().trim().alphanum().min(3).max(30).required(),
 				email: Joi.string().email({ minDomainAtoms: 2 }).required(),
 				password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required()
 			})
@@ -217,13 +217,41 @@ export default class Validate {
 	static loginUser(credentials) {
 		const schema = Joi.object()
 			.keys({
-				username: Joi.string().alphanum().min(3).max(30).required(),
-				password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/).required()
+				username: Joi.string().trim().alphanum().min(3).max(30).required(),
+				password: Joi.string().trim().regex(/^[a-zA-Z0-9]{3,30}$/).required()
 			})
 			.with('username', 'password');
 
 		const result = Joi.validate(credentials, schema, { abortEarly: false});
 
+		if(result.error !== null) {
+			return formatError(result.error.details);
+		}
+		return result.error;
+	}
+
+	/*
+		“id” : Integer, // message unique id
+		“createdOn” : DateTime,
+		“subject” : String,
+		“message” : String,
+		”parentMessageId” : Integer,
+		“status” : String,
+	*/
+	/**
+	 * 
+	 * @param {*} message 
+	 */
+	static sendMessage(message) {
+		const schema = Joi.object()
+			.keys({
+				recipientUsername: Joi.string().trim().alphanum().min(3).max(30).required(),
+				subject: Joi.string().trim().min(3).max(120).required(),
+				message: Joi.string().trim().min(3).max(500).required()
+			});
+
+		const result = Joi.validate(message, schema, { abortEarly: false});
+		
 		if(result.error !== null) {
 			return formatError(result.error.details);
 		}
